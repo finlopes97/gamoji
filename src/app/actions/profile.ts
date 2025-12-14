@@ -32,27 +32,30 @@ export async function getUserProfile() {
 
   // 3. Calculate New Stats
   const totalGames = validHistory.length;
+
+  // Filter for only solved games first to be safe
+  const solvedGames = validHistory.filter(h => h.status === 'solved');
   
   // Calculate Average Time
-  const totalTime = validHistory.reduce((acc, curr) => acc + curr.final_score_ms, 0);
-  const avgTimeMs = totalGames > 0 ? totalTime / totalGames : 0;
+  const totalTime = solvedGames.reduce((acc, curr) => acc + (curr.final_score_ms || 0), 0);
+  const avgTimeMs = solvedGames.length > 0 ? totalTime / solvedGames.length : 0;
 
   // Calculate Average Rank
-  const totalRank = validHistory.reduce((acc, curr) => acc + curr.rank, 0);
-  const avgRank = totalGames > 0 ? Math.round((totalRank / totalGames) * 10) / 10 : 0; // Round to 1 decimal
+  const totalRank = validHistory.reduce((acc, curr) => acc + (curr.rank || 0), 0);
+  const avgRank = totalGames > 0 ? Math.round((totalRank / totalGames) * 10) / 10 : 0;
 
   // Find Best Rank
   const bestRank = validHistory.length > 0 
-    ? Math.min(...validHistory.map(h => h.rank)) 
+    ? Math.min(...validHistory.map(h => h.rank || 999)) 
     : 0;
 
   return {
     profile,
     stats: {
       totalGames,
-      avgRank,  // <--- Replaces Win Rate
+      avgRank, 
       avgTimeMs,
-      bestRank  // <--- Replaces Total Wins
+      bestRank: bestRank === 999 ? 0 : bestRank
     },
     history: validHistory
   };
