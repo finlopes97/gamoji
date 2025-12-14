@@ -16,10 +16,13 @@ export default async function ArchiveGamePage({ params }: PageProps) {
   const { data: rawStats } = await supabase
     .rpc('get_daily_stats', { target_date: date });
 
-  const globalStats = rawStats ? {
-    total_plays: rawStats.total_plays || 0,
-    avg_time_ms: rawStats.avg_time_ms || 0,
-    best_time_ms: rawStats.best_time_ms || 0
+  const stats = rawStats as any;
+
+  // Handle default values if no one has played yet
+  const globalStats = stats ? {
+    total_plays: stats.total_plays || 0,
+    avg_time_ms: stats.avg_time_ms || 0,
+    best_time_ms: stats.best_time_ms || 0
   } : { total_plays: 0, avg_time_ms: 0, best_time_ms: 0 };
 
   const { data: puzzle } = await supabase

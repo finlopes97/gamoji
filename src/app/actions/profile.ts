@@ -34,7 +34,7 @@ export async function getUserProfile() {
   const totalGames = validHistory.length;
 
   // Filter for only solved games first to be safe
-  const solvedGames = validHistory.filter(h => h.status === 'solved');
+  const solvedGames = validHistory;
   
   // Calculate Average Time
   const totalTime = solvedGames.reduce((acc, curr) => acc + (curr.final_score_ms || 0), 0);

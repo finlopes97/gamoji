@@ -13,6 +13,22 @@ const formatDate = (dateString: string) => {
 
 export default async function ProfilePage() {
   const { profile, stats, history } = await getUserProfile();
+  
+  if (!profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
+        <p className="text-gray-500">Profile data not found.</p>
+      </div>
+    );
+  }
+
+  if (!profile.created_at) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
+        <p className="text-gray-500">Profile data not found.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-6">
